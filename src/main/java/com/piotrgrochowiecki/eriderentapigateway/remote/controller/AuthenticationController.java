@@ -2,6 +2,7 @@ package com.piotrgrochowiecki.eriderentapigateway.remote.controller;
 
 import com.piotrgrochowiecki.eriderentapigateway.remote.client.AuthenticationServiceClient;
 import com.piotrgrochowiecki.eriderentapigateway.remote.dto.AuthenticationRequestDto;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +18,7 @@ public class AuthenticationController {
     private final AuthenticationServiceClient client;
 
     @PostMapping("/authenticate")
-    public ResponseEntity<?> authenticate(@RequestBody AuthenticationRequestDto requestDto) {
+    public ResponseEntity<?> authenticate(@Valid @RequestBody AuthenticationRequestDto requestDto) {
         return client.authenticate(requestDto);
     }
 
