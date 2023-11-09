@@ -73,5 +73,4 @@ public class AuthenticationServiceClientImpl implements AuthenticationServiceCli
                         .body(new RuntimeExceptionDto(errorResponse.message(),
                                                       LocalDateTime.now())));
     }
-
 }
