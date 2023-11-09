@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
@@ -26,6 +27,16 @@ public class GlobalExceptionHandler {
                 .collect(Collectors.joining(", "));
         return RuntimeExceptionDto.builder()
                 .message(errorMessage)
+                .timeStamp(LocalDateTime.now())
+                .build();
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(TimeoutException.class)
+    public RuntimeExceptionDto handleTimeoutRuntimeException(TimeoutException exception) {
+        return RuntimeExceptionDto.builder()
+                .message(exception.getMessage())
                 .timeStamp(LocalDateTime.now())
                 .build();
     }
