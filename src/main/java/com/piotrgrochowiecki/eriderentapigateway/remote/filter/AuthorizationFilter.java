@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -23,12 +24,18 @@ public class AuthorizationFilter implements Filter {
         HttpServletResponse res = (HttpServletResponse) response;
         String accessToken = req.getHeader(HttpHeaders.AUTHORIZATION);
         String url = req.getRequestURI();
-        boolean isAuthorized = authorizationServiceClient.authorize(accessToken, url);
 
-        if (isAuthorized) {
+        if (url.equals("/api/gateway/authenticate")) {
+            chain.doFilter(request, response);
+            return;
+        }
+
+        ResponseEntity<String> responseEntity = authorizationServiceClient.authorize(accessToken, url);
+
+        if (responseEntity.getStatusCode().is2xxSuccessful()) {
             chain.doFilter(request, response);
         } else {
-            res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+            res.sendError(responseEntity.getStatusCode().value());
         }
     }
 
