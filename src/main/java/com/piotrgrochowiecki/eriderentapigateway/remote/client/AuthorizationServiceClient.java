@@ -1,8 +1,10 @@
 package com.piotrgrochowiecki.eriderentapigateway.remote.client;
 
 
+import org.springframework.http.ResponseEntity;
+
 public interface AuthorizationServiceClient {
 
-    boolean authorize(String authToken, String url);
+    ResponseEntity<String> authorize(String authToken, String url);
 
 }

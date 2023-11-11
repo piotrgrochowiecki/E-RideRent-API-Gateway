@@ -30,11 +30,19 @@ public class GlobalExceptionHandler {
                 .timeStamp(LocalDateTime.now())
                 .build();
     }
-
     @ResponseBody
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(TimeoutException.class)
     public RuntimeExceptionDto handleTimeoutRuntimeException(TimeoutException exception) {
+        return RuntimeExceptionDto.builder()
+                .message(exception.getMessage())
+                .timeStamp(LocalDateTime.now())
+                .build();
+    }
+    @ResponseBody
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(Exception.class)
+    public RuntimeExceptionDto handleOtherExceptions(Exception exception) {
         return RuntimeExceptionDto.builder()
                 .message(exception.getMessage())
                 .timeStamp(LocalDateTime.now())
