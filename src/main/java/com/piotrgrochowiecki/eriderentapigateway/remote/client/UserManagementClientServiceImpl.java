@@ -38,7 +38,7 @@ public class UserManagementClientServiceImpl implements UserManagementClientServ
         String endpoint = USER_CONTROLLER_URL + USER_MANAGEMENT_USER_GET_BY_UUID + uuid;
 
         return userManagementClient.get()
-                .uri(endpoint + uuid)
+                .uri(endpoint)
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .toEntity(UserResponseDto.class)
