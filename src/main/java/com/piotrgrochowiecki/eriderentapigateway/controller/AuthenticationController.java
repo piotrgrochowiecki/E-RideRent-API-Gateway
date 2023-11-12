@@ -1,6 +1,6 @@
-package com.piotrgrochowiecki.eriderentapigateway.remote.controller;
+package com.piotrgrochowiecki.eriderentapigateway.controller;
 
-import com.piotrgrochowiecki.eriderentapigateway.remote.client.AuthenticationServiceClient;
+import com.piotrgrochowiecki.eriderentapigateway.client.AuthenticationServiceClient;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;

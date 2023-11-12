@@ -1,4 +1,4 @@
-package com.piotrgrochowiecki.eriderentapigateway.remote.service;
+package com.piotrgrochowiecki.eriderentapigateway.service;
 
 import lombok.Getter;
 

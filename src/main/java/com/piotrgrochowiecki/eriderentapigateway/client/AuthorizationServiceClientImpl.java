@@ -1,6 +1,6 @@
-package com.piotrgrochowiecki.eriderentapigateway.remote.client;
+package com.piotrgrochowiecki.eriderentapigateway.client;
 
-import com.piotrgrochowiecki.eriderentapigateway.remote.dto.AuthorizationRequestUrlDto;
+import com.piotrgrochowiecki.eriderentapigateway.dto.AuthorizationRequestUrlDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;

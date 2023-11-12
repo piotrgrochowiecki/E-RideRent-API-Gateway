@@ -1,6 +1,6 @@
-package com.piotrgrochowiecki.eriderentapigateway.remote.filter;
+package com.piotrgrochowiecki.eriderentapigateway.filter;
 
-import com.piotrgrochowiecki.eriderentapigateway.remote.client.AuthorizationServiceClient;
+import com.piotrgrochowiecki.eriderentapigateway.client.AuthorizationServiceClient;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

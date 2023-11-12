@@ -1,4 +1,4 @@
-package com.piotrgrochowiecki.eriderentapigateway.remote.client;
+package com.piotrgrochowiecki.eriderentapigateway.client;
 
 
 import org.springframework.http.ResponseEntity;

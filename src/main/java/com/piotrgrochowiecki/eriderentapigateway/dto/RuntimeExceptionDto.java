@@ -1,4 +1,4 @@
-package com.piotrgrochowiecki.eriderentapigateway.remote.dto;
+package com.piotrgrochowiecki.eriderentapigateway.dto;
 
 import lombok.Builder;
 

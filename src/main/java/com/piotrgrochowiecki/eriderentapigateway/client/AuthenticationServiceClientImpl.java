@@ -1,6 +1,6 @@
-package com.piotrgrochowiecki.eriderentapigateway.remote.client;
+package com.piotrgrochowiecki.eriderentapigateway.client;
 
-import com.piotrgrochowiecki.eriderentapigateway.remote.dto.RuntimeExceptionDto;
+import com.piotrgrochowiecki.eriderentapigateway.dto.RuntimeExceptionDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;

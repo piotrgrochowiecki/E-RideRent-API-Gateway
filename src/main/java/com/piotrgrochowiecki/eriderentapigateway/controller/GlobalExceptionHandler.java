@@ -1,6 +1,6 @@
-package com.piotrgrochowiecki.eriderentapigateway.remote.controller;
+package com.piotrgrochowiecki.eriderentapigateway.controller;
 
-import com.piotrgrochowiecki.eriderentapigateway.remote.dto.RuntimeExceptionDto;
+import com.piotrgrochowiecki.eriderentapigateway.dto.RuntimeExceptionDto;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;

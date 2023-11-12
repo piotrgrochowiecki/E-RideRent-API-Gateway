@@ -1,6 +1,6 @@
-package com.piotrgrochowiecki.eriderentapigateway.remote.controller;
+package com.piotrgrochowiecki.eriderentapigateway.controller;
 
-import com.piotrgrochowiecki.eriderentapigateway.remote.service.ForwardingService;
+import com.piotrgrochowiecki.eriderentapigateway.service.ForwardingService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
