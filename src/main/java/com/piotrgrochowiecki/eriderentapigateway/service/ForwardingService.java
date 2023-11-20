@@ -30,6 +30,8 @@ public class ForwardingService {
                     .block();
         }
 
+        //TODO poprawić obsługę wyjątków (np. przy próbie stworzenia istniejącego usera)
+
     public ResponseEntity<?> forward(HttpServletRequest request) {
         String endpoint = buildEndpoint(request.getRequestURI());
         return webClient.get()
@@ -41,9 +43,12 @@ public class ForwardingService {
 
     private String buildEndpoint(String uri) {
         Map<String, Microservice> microserviceMap = new HashMap<>();
+        //TODO stworzyć klasę MicroserviceWrapper, która raz stworzy i dostarczy mapę (lub pasujący adres)
+        // chodzi o nie tworzenie mapy za każdym razem
         microserviceMap.put("car", Microservice.CAR);
         microserviceMap.put("booking", Microservice.BOOKING);
         microserviceMap.put("user", Microservice.USER);
+        microserviceMap.put("authentication", Microservice.AUTHENTICATION);
 
         for(Map.Entry<String, Microservice> entry : microserviceMap.entrySet()) {
             if(uri.contains(entry.getKey())) {
@@ -51,7 +56,7 @@ public class ForwardingService {
                         .getPort() + uri;
             }
         }
-        return " ";
+        return " "; //TODO rzucić wyjącetk i zwrócić 404
     }
 
 }
