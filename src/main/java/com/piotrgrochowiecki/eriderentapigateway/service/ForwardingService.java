@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -17,6 +16,7 @@ import java.util.Map;
 public class ForwardingService {
 
     private final WebClient webClient;
+    private final MicroserviceWrapper microserviceWrapper;
 
     private final static String LOCALHOST = "http://localhost:";
 
@@ -43,14 +43,7 @@ public class ForwardingService {
     }
 
     private String buildEndpoint(String uri) {
-        Map<String, Microservice> microserviceMap = new HashMap<>();
-        //TODO stworzyć klasę MicroserviceWrapper, która raz stworzy i dostarczy mapę (lub pasujący adres)
-        // chodzi o nie tworzenie mapy za każdym razem
-        microserviceMap.put("car", Microservice.CAR);
-        microserviceMap.put("booking", Microservice.BOOKING);
-        microserviceMap.put("user", Microservice.USER);
-        microserviceMap.put("authentication", Microservice.AUTHENTICATION);
-
+        Map<String, Microservice> microserviceMap = microserviceWrapper.getMicroserviceMap();
         for(Map.Entry<String, Microservice> entry : microserviceMap.entrySet()) {
             if(uri.contains(entry.getKey())) {
                 return LOCALHOST + entry.getValue()
