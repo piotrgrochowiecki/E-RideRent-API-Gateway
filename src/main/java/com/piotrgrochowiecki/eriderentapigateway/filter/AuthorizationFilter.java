@@ -32,7 +32,7 @@ public class AuthorizationFilter implements Filter {
             return;
         }
 
-        if (req.getHeader(HttpHeaders.AUTHORIZATION) == null) {
+        if (isAuthorizationHeaderPresent(req)) {
             res.sendError(403, "Forbidden");
             return;
         }
@@ -54,6 +54,10 @@ public class AuthorizationFilter implements Filter {
                                               .equals(endpoint.httpMethod()
                                                                    .toString()
                                                                    .toUpperCase()));
+    }
+
+    private boolean isAuthorizationHeaderPresent(HttpServletRequest req) {
+        return req.getHeader(HttpHeaders.AUTHORIZATION) == null || req.getHeader(HttpHeaders.AUTHORIZATION).isBlank();
     }
 
 }

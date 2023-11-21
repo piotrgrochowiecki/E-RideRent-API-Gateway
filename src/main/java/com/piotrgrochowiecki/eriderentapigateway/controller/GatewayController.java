@@ -19,7 +19,7 @@ public class GatewayController {
 
     @RequestMapping(value = "/**", method = RequestMethod.POST)
     public ResponseEntity<?> handlePostRequest(HttpServletRequest request,
-                                              @RequestBody String body) {
+                                              @RequestBody String body) { //TODO ustawić required = false, co pozwoli obsłużyć uwierzytelnienie tym kontrolerem
         return forwardingService.forward(request, body);
     }
 }
