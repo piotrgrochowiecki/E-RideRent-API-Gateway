@@ -1,5 +1,6 @@
 package com.piotrgrochowiecki.eriderentapigateway.service;
 
+import com.piotrgrochowiecki.eriderentapigateway.exception.BadRequestRuntimeException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
@@ -56,7 +57,7 @@ public class ForwardingService {
                         .getPort() + uri;
             }
         }
-        return " "; //TODO rzucić wyjącetk i zwrócić 404
+        throw new BadRequestRuntimeException("Could not build correct URL");
     }
 
 }
