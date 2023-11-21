@@ -1,6 +1,7 @@
 package com.piotrgrochowiecki.eriderentapigateway.controller;
 
 import com.piotrgrochowiecki.eriderentapigateway.dto.RuntimeExceptionDto;
+import com.piotrgrochowiecki.eriderentapigateway.exception.BadRequestRuntimeException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -30,6 +31,17 @@ public class GlobalExceptionHandler {
                 .timeStamp(LocalDateTime.now())
                 .build();
     }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(BadRequestRuntimeException.class)
+    public RuntimeExceptionDto handleBadRequestRuntimeException(BadRequestRuntimeException exception) {
+        return RuntimeExceptionDto.builder()
+                .message(exception.getMessage())
+                .timeStamp(LocalDateTime.now())
+                .build();
+    }
+
     @ResponseBody
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(TimeoutException.class)
@@ -39,6 +51,7 @@ public class GlobalExceptionHandler {
                 .timeStamp(LocalDateTime.now())
                 .build();
     }
+
     @ResponseBody
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)

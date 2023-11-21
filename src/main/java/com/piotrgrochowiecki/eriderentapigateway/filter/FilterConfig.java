@@ -11,13 +11,14 @@ import org.springframework.stereotype.Component;
 public class FilterConfig {
 
     private final AuthorizationServiceClient authorizationServiceClient;
+    private final EndpointList endpointList;
 
     @Bean
     public FilterRegistrationBean<AuthorizationFilter> exposeFilter() {
         FilterRegistrationBean<AuthorizationFilter> registrationBean = new FilterRegistrationBean<>();
 
-        registrationBean.setFilter(new AuthorizationFilter(authorizationServiceClient));
-        registrationBean.addUrlPatterns("/api/user/*");
+        registrationBean.setFilter(new AuthorizationFilter(authorizationServiceClient, endpointList));
+        registrationBean.addUrlPatterns("/**");
 
         return registrationBean;
     }

@@ -1,5 +1,6 @@
 package com.piotrgrochowiecki.eriderentapigateway.service;
 
+import com.piotrgrochowiecki.eriderentapigateway.exception.BadRequestRuntimeException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
@@ -8,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -16,6 +16,7 @@ import java.util.Map;
 public class ForwardingService {
 
     private final WebClient webClient;
+    private final MicroserviceWrapper microserviceWrapper;
 
     private final static String LOCALHOST = "http://localhost:";
 
@@ -30,6 +31,8 @@ public class ForwardingService {
                     .block();
         }
 
+        //TODO poprawić obsługę wyjątków (np. przy próbie stworzenia istniejącego usera)
+
     public ResponseEntity<?> forward(HttpServletRequest request) {
         String endpoint = buildEndpoint(request.getRequestURI());
         return webClient.get()
@@ -40,18 +43,14 @@ public class ForwardingService {
     }
 
     private String buildEndpoint(String uri) {
-        Map<String, Microservice> microserviceMap = new HashMap<>();
-        microserviceMap.put("car", Microservice.CAR);
-        microserviceMap.put("booking", Microservice.BOOKING);
-        microserviceMap.put("user", Microservice.USER);
-
+        Map<String, Microservice> microserviceMap = microserviceWrapper.getMicroserviceMap();
         for(Map.Entry<String, Microservice> entry : microserviceMap.entrySet()) {
             if(uri.contains(entry.getKey())) {
                 return LOCALHOST + entry.getValue()
                         .getPort() + uri;
             }
         }
-        return " ";
+        throw new BadRequestRuntimeException("Could not build correct URL");
     }
 
 }

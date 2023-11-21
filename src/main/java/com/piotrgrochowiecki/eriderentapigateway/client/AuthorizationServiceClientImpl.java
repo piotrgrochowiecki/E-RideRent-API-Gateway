@@ -8,8 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.time.Duration;
-
 @Service
 @RequiredArgsConstructor
 public class AuthorizationServiceClientImpl implements AuthorizationServiceClient {
@@ -23,10 +21,11 @@ public class AuthorizationServiceClientImpl implements AuthorizationServiceClien
     private String IDENTITY_PROVIDER_AUTHORIZE_ENDPOINT;
 
     @Override
-    public ResponseEntity<String> authorize(String authToken, String url) {
+    public ResponseEntity<String> authorize(String authToken, String url, String httpMethod) {
         String endpoint = IDENTITY_PROVIDER_URL + IDENTITY_PROVIDER_AUTHORIZE_ENDPOINT;
         AuthorizationRequestUrlDto authorizationRequestUrlDto = AuthorizationRequestUrlDto.builder()
                 .url(url)
+                .httpMethod(httpMethod)
                 .build();
 
         return webClient.post()
@@ -36,7 +35,6 @@ public class AuthorizationServiceClientImpl implements AuthorizationServiceClien
                 .body(BodyInserters.fromValue(authorizationRequestUrlDto))
                 .header(HttpHeaders.AUTHORIZATION, authToken)
                 .exchangeToMono(clientResponse -> clientResponse.toEntity(String.class))
-                .timeout(Duration.ofSeconds(5))
                 .block();
     }
 

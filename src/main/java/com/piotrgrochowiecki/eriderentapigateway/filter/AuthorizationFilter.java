@@ -16,6 +16,7 @@ import java.io.IOException;
 public class AuthorizationFilter implements Filter {
 
     private final AuthorizationServiceClient authorizationServiceClient;
+    private final EndpointList endpointList;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -24,19 +25,39 @@ public class AuthorizationFilter implements Filter {
         HttpServletResponse res = (HttpServletResponse) response;
         String accessToken = req.getHeader(HttpHeaders.AUTHORIZATION);
         String url = req.getRequestURI();
+        String httpMethod = req.getMethod().toUpperCase();
 
-        if (url.equals("/api/gateway/authenticate")) {
+        if (isRequestAllowedToBeAnonymous(req)) {
             chain.doFilter(request, response);
             return;
         }
 
-        ResponseEntity<String> responseEntity = authorizationServiceClient.authorize(accessToken, url);
+        if (isAuthorizationHeaderPresent(req)) {
+            res.sendError(403, "Forbidden");
+            return;
+        }
+
+        ResponseEntity<String> responseEntity = authorizationServiceClient.authorize(accessToken, url, httpMethod);
 
         if (responseEntity.getStatusCode().is2xxSuccessful()) {
             chain.doFilter(request, response);
         } else {
             res.sendError(responseEntity.getStatusCode().value());
         }
+    }
+
+    private boolean isRequestAllowedToBeAnonymous(HttpServletRequest req) {
+        return endpointList.getAnonymousAllowedEndpoints().stream()
+                .anyMatch(endpoint -> req.getRequestURI()
+                                              .contains(endpoint.url())
+                                      && req.getMethod()
+                                              .equals(endpoint.httpMethod()
+                                                                   .toString()
+                                                                   .toUpperCase()));
+    }
+
+    private boolean isAuthorizationHeaderPresent(HttpServletRequest req) {
+        return req.getHeader(HttpHeaders.AUTHORIZATION) == null || req.getHeader(HttpHeaders.AUTHORIZATION).isBlank();
     }
 
 }
