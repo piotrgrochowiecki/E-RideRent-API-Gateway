@@ -16,9 +16,7 @@ import java.util.Map;
 public class ForwardingService {
 
     private final WebClient webClient;
-    private final MicroserviceWrapper microserviceWrapper;
-
-    private final static String LOCALHOST = "http://localhost:";
+    private final MicroserviceHostProvider microserviceHostProvider;
 
     public ResponseEntity<?> forward(HttpServletRequest request, String body) {
         String endpoint = buildEndpoint(request.getRequestURI());
@@ -31,8 +29,6 @@ public class ForwardingService {
                     .block();
         }
 
-        //TODO poprawić obsługę wyjątków (np. przy próbie stworzenia istniejącego usera)
-
     public ResponseEntity<?> forward(HttpServletRequest request) {
         String endpoint = buildEndpoint(request.getRequestURI());
         return webClient.get()
@@ -43,11 +39,10 @@ public class ForwardingService {
     }
 
     private String buildEndpoint(String uri) {
-        Map<String, Microservice> microserviceMap = microserviceWrapper.getMicroserviceMap();
-        for(Map.Entry<String, Microservice> entry : microserviceMap.entrySet()) {
+        Map<String, String> microserviceMap = microserviceHostProvider.getMicroserviceHostMap();
+        for(Map.Entry<String, String> entry : microserviceMap.entrySet()) {
             if(uri.contains(entry.getKey())) {
-                return LOCALHOST + entry.getValue()
-                        .getPort() + uri;
+                return entry.getValue() + uri;
             }
         }
         throw new BadRequestRuntimeException("Could not build correct URL");
