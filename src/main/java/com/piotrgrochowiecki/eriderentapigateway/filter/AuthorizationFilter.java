@@ -23,9 +23,6 @@ public class AuthorizationFilter implements Filter {
 
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
-        String accessToken = req.getHeader(HttpHeaders.AUTHORIZATION);
-        String url = req.getRequestURI();
-        String httpMethod = req.getMethod().toUpperCase();
 
         if (isRequestAllowedToBeAnonymous(req)) {
             chain.doFilter(request, response);
