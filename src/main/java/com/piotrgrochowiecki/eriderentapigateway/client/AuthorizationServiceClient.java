@@ -2,10 +2,11 @@ package com.piotrgrochowiecki.eriderentapigateway.client;
 
 
 import jakarta.servlet.ServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 
 public interface AuthorizationServiceClient {
 
-    ResponseEntity<String> authorize(String authToken, String url, String httpMethod); //TODO poprawić na przyjmowanie obiektu request
+    ResponseEntity<String> authorize(HttpServletRequest request);
 
 }
