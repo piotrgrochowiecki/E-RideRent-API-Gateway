@@ -23,9 +23,6 @@ public class AuthorizationFilter implements Filter {
 
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
-        String accessToken = req.getHeader(HttpHeaders.AUTHORIZATION);
-        String url = req.getRequestURI();
-        String httpMethod = req.getMethod().toUpperCase();
 
         if (isRequestAllowedToBeAnonymous(req)) {
             chain.doFilter(request, response);
@@ -37,7 +34,7 @@ public class AuthorizationFilter implements Filter {
             return;
         }
 
-        ResponseEntity<String> responseEntity = authorizationServiceClient.authorize(accessToken, url, httpMethod);
+        ResponseEntity<String> responseEntity = authorizationServiceClient.authorize(req);
 
         if (responseEntity.getStatusCode().is2xxSuccessful()) {
             chain.doFilter(request, response);
@@ -48,12 +45,19 @@ public class AuthorizationFilter implements Filter {
 
     private boolean isRequestAllowedToBeAnonymous(HttpServletRequest req) {
         return endpointList.getAnonymousAllowedEndpoints().stream()
-                .anyMatch(endpoint -> req.getRequestURI()
-                                              .contains(endpoint.url())
-                                      && req.getMethod()
-                                              .equals(endpoint.httpMethod()
-                                                                   .toString()
-                                                                   .toUpperCase()));
+                .anyMatch(endpoint -> doUrlAndMethodMatch(req, endpoint));
+    }
+
+    private boolean doUrlAndMethodMatch(HttpServletRequest req, Endpoint endpoint) {
+        return doesMethodMatch(req, endpoint) && doesUrlMatch(req, endpoint);
+    }
+
+    private boolean doesUrlMatch(HttpServletRequest req, Endpoint endpoint) {
+        return req.getRequestURI().contains(endpoint.url());
+    }
+
+    private boolean doesMethodMatch(HttpServletRequest req, Endpoint endpoint) {
+        return req.getMethod().equals(endpoint.httpMethod().toString().toUpperCase());
     }
 
     private boolean isAuthorizationHeaderPresent(HttpServletRequest req) {
