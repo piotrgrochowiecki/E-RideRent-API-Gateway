@@ -6,6 +6,6 @@ import org.springframework.http.ResponseEntity;
 
 public interface AuthorizationServiceClient {
 
-    ResponseEntity<String> authorize(HttpServletRequest request);
+    ResponseEntity<?> authorize(HttpServletRequest request);
 
 }

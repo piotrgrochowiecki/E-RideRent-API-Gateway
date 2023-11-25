@@ -1,4 +1,4 @@
-package com.piotrgrochowiecki.eriderentapigateway.service;
+package com.piotrgrochowiecki.eriderentapigateway.helper;
 
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;

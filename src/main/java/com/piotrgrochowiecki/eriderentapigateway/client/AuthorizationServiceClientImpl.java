@@ -1,6 +1,7 @@
 package com.piotrgrochowiecki.eriderentapigateway.client;
 
 import com.piotrgrochowiecki.eriderentapigateway.dto.AuthorizationRequestUrlDto;
+import com.piotrgrochowiecki.eriderentapigateway.helper.ResponseEntityHelper;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 public class AuthorizationServiceClientImpl implements AuthorizationServiceClient {
 
     private final WebClient webClient;
+    private final ResponseEntityHelper responseEntityHelper;
 
     @Value("${url.identityProvider}")
     private String IDENTITY_PROVIDER_URL;
@@ -30,7 +32,7 @@ public class AuthorizationServiceClientImpl implements AuthorizationServiceClien
     private String IDENTITY_PROVIDER_AUTHORIZE_ENDPOINT;
 
     @Override
-    public ResponseEntity<String> authorize(HttpServletRequest request) {
+    public ResponseEntity<?> authorize(HttpServletRequest request) {
         String endpoint = IDENTITY_PROVIDER_URL + IDENTITY_PROVIDER_AUTHORIZE_ENDPOINT;
         AuthorizationRequestUrlDto authorizationRequestUrlDto = AuthorizationRequestUrlDto.builder()
                 .url(request.getRequestURI())
@@ -39,7 +41,7 @@ public class AuthorizationServiceClientImpl implements AuthorizationServiceClien
 
         MultiValueMap<String, String> headersMultiValueMap = getAllHeaders(request);
 
-        return webClient.post()
+        ResponseEntity<String> responseEntityFromService = webClient.post()
                 .uri(endpoint)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
@@ -47,12 +49,16 @@ public class AuthorizationServiceClientImpl implements AuthorizationServiceClien
                 .headers(headers -> headers.addAll(headersMultiValueMap))
                 .exchangeToMono(clientResponse -> clientResponse.toEntity(String.class))
                 .block();
+        return responseEntityHelper.transformResponseEntity(responseEntityFromService);
     }
 
     private MultiValueMap<String, String> getAllHeaders(HttpServletRequest request) {
         Map<String, List<String>> headersFromRequest = Collections.list(request.getHeaderNames()).stream()
                 .collect(Collectors.toMap(Function.identity(),
                                           header -> Collections.list(request.getHeaders(header))));
+        //remove "host" and "connection" headers as these are restricted and set by a WebClient
+        headersFromRequest.remove("host");
+        headersFromRequest.remove("connection");
 
         MultiValueMap<String, String> headersMultiValueMap = new LinkedMultiValueMap<>();
         headersMultiValueMap.putAll(headersFromRequest);

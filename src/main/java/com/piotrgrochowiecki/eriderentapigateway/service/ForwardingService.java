@@ -1,6 +1,8 @@
 package com.piotrgrochowiecki.eriderentapigateway.service;
 
 import com.piotrgrochowiecki.eriderentapigateway.exception.BadRequestRuntimeException;
+import com.piotrgrochowiecki.eriderentapigateway.helper.MicroserviceHostProvider;
+import com.piotrgrochowiecki.eriderentapigateway.helper.ResponseEntityHelper;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
@@ -17,6 +19,7 @@ public class ForwardingService {
 
     private final WebClient webClient;
     private final MicroserviceHostProvider microserviceHostProvider;
+    private final ResponseEntityHelper responseEntityHelper;
 
     public ResponseEntity<?> forward(HttpServletRequest request, String body) {
         String endpoint = buildEndpoint(request.getRequestURI());
@@ -28,7 +31,7 @@ public class ForwardingService {
                     .exchangeToMono(clientResponse -> clientResponse.toEntity(String.class))
                     .block();
 
-        return transformResponseEntity(responseEntityFromService);
+        return responseEntityHelper.transformResponseEntity(responseEntityFromService);
     }
 
     public ResponseEntity<?> forward(HttpServletRequest request) {
@@ -39,7 +42,7 @@ public class ForwardingService {
                     .exchangeToMono(clientResponse -> clientResponse.toEntity(String.class))
                     .block();
 
-        return transformResponseEntity(responseEntityFromService);
+        return responseEntityHelper.transformResponseEntity(responseEntityFromService);
     }
 
     private String buildEndpoint(String uri) {
@@ -51,15 +54,4 @@ public class ForwardingService {
         }
         throw new BadRequestRuntimeException("Could not build correct URL");
     }
-
-    private ResponseEntity<?> transformResponseEntity(ResponseEntity<?> responseEntityFromService) {
-        if (responseEntityFromService != null) {
-            return ResponseEntity.status(responseEntityFromService.getStatusCode())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(responseEntityFromService.getBody());
-        } else {
-            throw new RuntimeException("Did not receive response from server");
-        }
-    }
-
 }
