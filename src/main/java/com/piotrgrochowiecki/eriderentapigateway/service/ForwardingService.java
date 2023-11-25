@@ -1,6 +1,7 @@
 package com.piotrgrochowiecki.eriderentapigateway.service;
 
 import com.piotrgrochowiecki.eriderentapigateway.exception.BadRequestRuntimeException;
+import com.piotrgrochowiecki.eriderentapigateway.utils.MicroserviceHostProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
