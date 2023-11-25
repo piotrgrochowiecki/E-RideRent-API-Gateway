@@ -34,7 +34,7 @@ public class AuthorizationFilter implements Filter {
             return;
         }
 
-        ResponseEntity<String> responseEntity = authorizationServiceClient.authorize(req);
+        ResponseEntity<?> responseEntity = authorizationServiceClient.authorize(req);
 
         if (responseEntity.getStatusCode().is2xxSuccessful()) {
             chain.doFilter(request, response);
