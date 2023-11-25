@@ -45,12 +45,19 @@ public class AuthorizationFilter implements Filter {
 
     private boolean isRequestAllowedToBeAnonymous(HttpServletRequest req) {
         return endpointList.getAnonymousAllowedEndpoints().stream()
-                .anyMatch(endpoint -> req.getRequestURI()
-                                              .contains(endpoint.url())
-                                      && req.getMethod()
-                                              .equals(endpoint.httpMethod()
-                                                                   .toString()
-                                                                   .toUpperCase()));
+                .anyMatch(endpoint -> doUrlAndMethodMatch(req, endpoint));
+    }
+
+    private boolean doUrlAndMethodMatch(HttpServletRequest req, Endpoint endpoint) {
+        return doesMethodMatch(req, endpoint) && doesUrlMatch(req, endpoint);
+    }
+
+    private boolean doesUrlMatch(HttpServletRequest req, Endpoint endpoint) {
+        return req.getRequestURI().contains(endpoint.url());
+    }
+
+    private boolean doesMethodMatch(HttpServletRequest req, Endpoint endpoint) {
+        return req.getMethod().equals(endpoint.httpMethod().toString().toUpperCase());
     }
 
     private boolean isAuthorizationHeaderPresent(HttpServletRequest req) {
