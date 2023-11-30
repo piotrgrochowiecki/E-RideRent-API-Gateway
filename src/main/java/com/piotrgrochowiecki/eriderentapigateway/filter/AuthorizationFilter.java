@@ -39,7 +39,11 @@ public class AuthorizationFilter implements Filter {
         if (responseEntity.getStatusCode().is2xxSuccessful()) {
             chain.doFilter(request, response);
         } else {
-            res.sendError(responseEntity.getStatusCode().value());
+            res.setStatus(responseEntity.getStatusCode().value());
+            if (responseEntity.getBody() != null) {
+                res.setContentType("application/json");
+                res.getWriter().write(responseEntity.getBody().toString());
+            }
         }
     }
 
